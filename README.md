@@ -3,6 +3,7 @@
 > **Kaggle competition:** [Recod.AI/LUC — Scientific Image Forgery Detection](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection) (~1,564 teams, ended Jan 2026)
 > **Result:** 🥈 Silver Medal — Public LB 0.321 / Private LB 0.189
 > **Approach:** Frozen DINOv2 + lightweight CNN decoder for pixel-level forgery segmentation
+> **Author:** [@web3cainiao](https://www.kaggle.com/web3cainiao) on Kaggle · [Original competition notebook](https://www.kaggle.com/code/web3cainiao/scientific-forensics-dinov2-cnn-ipynb)
 
 [中文摘要见文末](#中文摘要)
 
