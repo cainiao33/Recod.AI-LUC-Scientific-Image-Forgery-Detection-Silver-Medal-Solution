@@ -1,10 +1,10 @@
 # Recod.AI/LUC — Scientific Image Forgery Detection: Silver Medal Solution
 
 > **Kaggle competition:** [Recod.AI/LUC — Scientific Image Forgery Detection](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection) (~1,564 teams, ended Jan 2026)
-> **Result:** 🥈 Silver Medal — Public LB 0.321 / Private LB 0.189
+> **Result:** 🥈 Silver Medal — Public LB 0.321 / Private LB 0.189 · [Final leaderboard](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection/leaderboard)
 > **Approach:** Frozen DINOv2 + lightweight CNN decoder for pixel-level forgery segmentation
 > **Quick start:** everything in one [`notebook.ipynb`](notebook.ipynb) — training, inference, and submission, end to end
-> **Author:** [@web3cainiao](https://www.kaggle.com/web3cainiao) on Kaggle · [Original competition notebook](https://www.kaggle.com/code/web3cainiao/scientific-forensics-dinov2-cnn-ipynb)
+> **Author:** [@web3cainiao](https://www.kaggle.com/web3cainiao) on Kaggle (award on [profile](https://www.kaggle.com/web3cainiao)) · [GitHub @cainiao33](https://github.com/cainiao33) · [Original competition notebook](https://www.kaggle.com/code/web3cainiao/scientific-forensics-dinov2-cnn-ipynb)
 
 [中文摘要见文末](#中文摘要)
 
@@ -114,7 +114,7 @@ MIT (code). Competition data remains subject to the competition's terms.
 
 ## 中文摘要
 
-**赛题**:检测生物医学论文插图中的 copy-move 伪造(同图内复制粘贴区域),输出分割 mask 或 `authentic`。约 1564 支队伍,获**银牌**(Public 0.321 / Private 0.189)。
+**赛题**:检测生物医学论文插图中的 copy-move 伪造(同图内复制粘贴区域),输出分割 mask 或 `authentic`。约 1564 支队伍,获**银牌**(Public 0.321 / Private 0.189)。[获奖记录](https://www.kaggle.com/web3cainiao) · [最终榜单](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection/leaderboard)
 
 **思路**:冻结的 DINOv2-base 当"通用异常探测器"(它太熟悉正常图像的统计规律,伪造区域会在特征空间凸显),接一个约 170 万参数的 3 层 CNN 小解码头(数据少,头的容量就是过拟合的容量)逐像素预测可疑度;推理用三路翻转 TTA;后处理是核心——Sobel 梯度增强(边界即拼接缝,证据最集中)、mean+0.3·std 自适应阈值、形态学清理,最后面积+置信度双门限防误报(本赛 authentic 图误报直接零分)。
 
