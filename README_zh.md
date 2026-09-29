@@ -1,8 +1,8 @@
 # Recod.AI/LUC — 科学图像伪造检测：银牌方案
 
 <p align="center">
-  <a href="README.md"><img src="https://img.shields.io/badge/🇬🇧_Language-English-blue?style=for-the-badge" alt="English"></a>
-  <a href="README_zh.md"><img src="https://img.shields.io/badge/🇨🇳_语言-中文-red?style=for-the-badge" alt="中文"></a>
+  <a href="README.md"><img src="https://img.shields.io/badge/切换语言-English-blue?style=for-the-badge" alt="English"></a>
+  <a href="README_zh.md"><img src="https://img.shields.io/badge/切换语言-简体中文-red?style=for-the-badge" alt="简体中文"></a>
 </p>
 
 > **Kaggle 比赛**：[Recod.AI/LUC — Scientific Image Forgery Detection](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection)（约 1,564 支队伍，2026 年 1 月结束）
