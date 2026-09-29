@@ -1,8 +1,8 @@
 # 我们的方案代码分析:CNN-DINOv2 Hybrid
 
-> 代码:`ours/scientific-forensics-dinov2-cnn-ipynb.ipynb`(纯代码版 `ours/notebook_full.py`)
+> 代码:[`notebook.ipynb`](../notebook.ipynb)(代码与公开 kernel 逐语句一致;仓库副本仅将 6 处遗留法语注释译为英文并重写首格概述 markdown,无任何逻辑改动)。下文 `:NNN` 行号沿用原分析所依据的纯代码导出版 `notebook_full.py`(未随仓库发布)的行号,与本仓库 notebook 的大致对应:cell[2]≈:1–309,cell[4]≈:310–397;cell[5–8] 为可视化,不在该导出版中
 > 成绩:银牌,Public LB 0.321 / Private LB 0.189
-> 性质说明:本 notebook 与 350 票公开 kernel(pankajiitr,该 kernel 又演进自 ravaghi 的 467 票 kernel)逐字节一致,为原样 fork + 权重复用,未做代码级改动。以下分析即对该谱系代码的完整解读。
+> 性质说明:本 notebook 与 350 票公开 kernel(pankajiitr,该 kernel 又演进自 ravaghi 的 467 票 kernel)代码一致,为原样 fork + 权重复用,未做任何逻辑改动(仓库副本仅翻译了 6 处法语注释、重写首格概述)。以下分析即对该谱系代码的完整解读。
 
 ---
 
@@ -10,7 +10,7 @@
 
 **冻结的 DINOv2-base 视觉 Transformer 提取整图特征 → 一个 3 层 CNN 小解码头逐像素预测"伪造概率图" → 自适应阈值 + 形态学得到 mask → 面积/置信度双门限决定输出 mask 还是 `authentic`。**
 
-纯推理 notebook:不训练,直接加载公开权重 `CNNDINOv2-U52/model_seg_final.pt`。
+纯推理 notebook:不训练,直接加载公开权重 `CNNDINOv2-U52/model_seg_final.pt`。训练侧脚本见 [`train.py`](../train.py)(赛后按本 notebook 组件补写,未在本地执行,诚实声明见其文件头)。
 
 ---
 
@@ -64,7 +64,7 @@ pipeline_final(pil)                          ← 每张测试图的入口 (noteb
           ──Conv1×1→   1 ─双线性上采样→ 518×518
 ```
 
-- 总共约 170 万参数,前两个 block 带 Dropout2d(0.1)
+- 总共 3,484,417 参数(约 348 万),前两个 block 带 Dropout2d(0.1)
 - 逐级上采样 + 卷积细化,是"特征图 → 分割图"的轻量做法
 - 注意:这是一个**逐像素二分类**头,没有任何"比较两个区域"的机制——模型只能学"伪造区域长什么样",学不到"这两个区域互为复制"
 
@@ -97,12 +97,13 @@ pipeline_final(pil)                          ← 每张测试图的入口 (noteb
 
 ### 4.4 验证集网格搜索(`:245-309`)
 
-在 20% 验证集上扫描 `MEAN_THR`(0.20→0.29,步长 0.01,AREA 固定 200),按官方 F1 规则(authentic 预测空记 1.0、预测非空记 0)选最优。**注意:评估和调参用的是同一个验证集**——这是 private 掉分的直接原因之一(详见第 6 节)。
+在 20% 验证集上扫描 `MEAN_THR`(0.20→0.29,步长 0.01,AREA 固定 200),按官方 F1 规则(authentic 预测空记 1.0、预测非空记 0)选最优。**注意:评估和调参用的是同一个验证集**——这是 private 掉分的直接原因之一(详见第 6 节)。另:cell[2] 末尾打印的"验证 F1"仅用 `val_forg[:10]`(前 10 张伪造验证图)做快速 sanity check,并非完整验证集评分。
 
 ### 4.5 提交生成(`:346-397`)
 
 - `rle_encode`:列优先展平,输出 `[start, length, start, length, ...]` 的 JSON 字符串;空 mask 输出 `"authentic"`
 - 与 `sample_submission.csv` 按 `case_id` 对齐,缺失补 `authentic`
+- 可视化(cell[5–8]):预测 mask/概率图叠图展示与 authentic 图对照,不影响提交管线
 
 ---
 
@@ -140,4 +141,4 @@ pipeline_final(pil)                          ← 每张测试图的入口 (noteb
 4. 叠加 SIFT 图内自匹配通道与概率图 0.7/0.3 融合 + SAM 精修(15th ik0zy)
 5. 两阶段训练:冻结→解冻尾 12 block 小学习率微调(65th muhammad)
 
-详细对比见 `solution-comparison.md`,通用经验见 `kaggle-cv-playbook-general.md`。
+详细对比(`solution-comparison.md`)与通用经验(`kaggle-cv-playbook-general.md`)两份文档未随本仓库发布。
