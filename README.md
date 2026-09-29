@@ -1,16 +1,19 @@
 # Recod.AI/LUC — Scientific Image Forgery Detection: Silver Medal Solution
 
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/🇬🇧_Language-English-blue?style=for-the-badge" alt="English"></a>
+  <a href="README_zh.md"><img src="https://img.shields.io/badge/🇨🇳_语言-中文-red?style=for-the-badge" alt="中文"></a>
+</p>
+
 > **Kaggle competition:** [Recod.AI/LUC — Scientific Image Forgery Detection](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection) (~1,564 teams, ended Jan 2026)
 > **Result:** 🥈 Silver Medal — rank **72 / 1,564** (top 5%) · Public LB 0.321 / Private LB 0.189 · [Final leaderboard](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection/leaderboard)
 > **Approach:** Frozen DINOv2 + lightweight CNN decoder for pixel-level forgery segmentation
 > **Quick start:** [`notebook.ipynb`](notebook.ipynb) is inference-only (checkpoint load → threshold grid search → TTA inference → submission); training code lives in [`train.py`](train.py)
 > **Author:** [@web3cainiao](https://www.kaggle.com/web3cainiao) on Kaggle (award on [profile](https://www.kaggle.com/web3cainiao)) · [GitHub @cainiao33](https://github.com/cainiao33) · [Original competition notebook](https://www.kaggle.com/code/web3cainiao/scientific-forensics-dinov2-cnn-ipynb)
 
-> 🏅 **Competition record:** [Kaggle 个人主页](https://www.kaggle.com/web3cainiao) · [全部比赛记录](https://www.kaggle.com/web3cainiao/competitions)
+> 🏅 **Competition record:** [Kaggle profile](https://www.kaggle.com/web3cainiao) · [all competitions](https://www.kaggle.com/web3cainiao/competitions)
 
 ![Kaggle competitions achievements — silver medal in Recod.AI/LUC (private 0.18958, rank 72 / 1,564)](assets/kaggle-competitions.png)
-
-[中文摘要见文末](#中文摘要)
 
 ---
 
@@ -134,17 +137,3 @@ The competition notebook's **code logic** is an unmodified fork of the public ke
 ## License
 
 MIT (code). Competition data remains subject to the competition's terms.
-
----
-
-## 中文摘要
-
-**赛题**:检测生物医学论文插图中的 copy-move 伪造(同图内复制粘贴区域),输出分割 mask 或 `authentic`。约 1564 支队伍,获**银牌**(第 72 名,前 5%;Public 0.321 / Private 0.189)。[获奖记录](https://www.kaggle.com/web3cainiao) · [全部比赛](https://www.kaggle.com/web3cainiao/competitions) · [最终榜单](https://www.kaggle.com/competitions/recodai-luc-scientific-image-forgery-detection/leaderboard)
-
-**思路**:冻结的 DINOv2-base 当"通用异常探测器"(它太熟悉正常图像的统计规律,伪造区域会在特征空间凸显),接一个约 348 万参数的 3 层 CNN 小解码头(数据少,头的容量就是过拟合的容量)逐像素预测可疑度;推理用三路翻转 TTA;后处理是核心——Sobel 梯度增强(边界即拼接缝,证据最集中)、mean+0.3·std 自适应阈值、形态学清理,最后面积+置信度双门限防误报(本赛 authentic 图误报直接零分)。
-
-**教训**:① copy-move 的本质是"两处相同"而非"有破绽",金牌方案都在"找重复"(匹配+几何验证),我们在"找破绽"——范式差距;② 阈值在评估用验证集上网格搜索导致 private 崩盘;③ 自适应阈值与绝对面积门限在分布漂移下不稳。
-
-**改进路线**(全部有公开参考):固定阈值+独立调参集 → 面积门限百分比化 → 滑窗高分辨率推理 → 加 SIFT 自匹配通道+SAM 精修 → 长期转向"检测+匹配"范式。详见第 4 节。
-
-**AI 协作**:README 与 `train.py`(未在本地执行)由 Claude Code 协助整理;notebook 代码为公开 kernel 原样 fork,仅将 6 处遗留法语注释译为英文并重写首格概述。
